@@ -1,4 +1,4 @@
-# Exercise: Student Management System (30 mins)
+# Exercise: Student Management System
 
 ### Create a program to manage students using pointers in Go. This program should have the following features:
 - Implement functions/methods to:
