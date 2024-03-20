@@ -19,7 +19,7 @@ func main() {
 	// s = append(s, 98, 99, 100)
 	fmt.Println(s)
 
-	// deleting an element from slice
+	// deleting an element from slice - performant
 	s[2] = s[len(s)-1]
 	s = s[:len(s)-1]
 	fmt.Println(s)
