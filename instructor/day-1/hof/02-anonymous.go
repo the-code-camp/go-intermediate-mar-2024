@@ -4,6 +4,7 @@ import "fmt"
 
 func main() {
 
+	// anonymous functions are for immediate consumption
 	func() {
 		fmt.Println("anonymous fn invoked")
 	}()
