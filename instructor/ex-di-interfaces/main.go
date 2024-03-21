@@ -9,12 +9,14 @@ import (
 
 func main() {
 
+	// creating instances of dependencies
+	dbRepo := repository.NewDbProductRepo()
+	// inMemRepo := repository.NewInMemoryProductRepo()
+
+	// wiring your application (configuration code)
+	ps := service.NewProductService(dbRepo)
+
 	// Printing all products
-	// dbRepo := repository.NewDbProductRepo()
-	inMemRepo := repository.NewInMemoryProductRepo()
-
-	ps := service.NewProductService(inMemRepo)
-
 	printProducts(ps.GetAllProducts())
 
 	newlyAddedProduct := ps.AddProduct("new product", model.BOOKS, 109.99)
