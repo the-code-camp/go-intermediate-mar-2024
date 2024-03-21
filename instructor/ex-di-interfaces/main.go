@@ -6,6 +6,9 @@ import (
 	"ex-di-interfaces/service"
 	"log"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 type ProductRouter struct {
@@ -23,9 +26,12 @@ func main() {
 	ps := service.NewProductService(dbRepo)
 	router := NewProductRouter(ps)
 
-	http.HandleFunc("/products", router.productsHandler)
+	r := mux.NewRouter()
 
-	log.Fatal(http.ListenAndServe("localhost:8000", nil))
+	r.HandleFunc("/products", router.productsHandler).Methods(http.MethodGet)
+	r.HandleFunc("/products/{id:[0-9]+}", router.singleProductHandler).Methods(http.MethodGet)
+
+	log.Fatal(http.ListenAndServe("localhost:8000", r))
 }
 
 func (pr ProductRouter) productsHandler(w http.ResponseWriter, r *http.Request) {
@@ -35,5 +41,24 @@ func (pr ProductRouter) productsHandler(w http.ResponseWriter, r *http.Request) 
 	if err := json.NewEncoder(w).Encode(products); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Some error occoured"))
+	}
+}
+
+func (pr ProductRouter) singleProductHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+	productId, _ := strconv.Atoi(id)
+
+	product := pr.service.GetProductById(productId)
+	w.Header().Add("Content-Type", "application/json")
+
+	if product == nil {
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(map[string]string{"message": "product does not exist"})
+	} else {
+		if err := json.NewEncoder(w).Encode(product); err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("Some error occoured"))
+		}
 	}
 }
