@@ -8,7 +8,8 @@ import (
 // var repo repository.InMemoryProductRepo = repository.NewInMemoryProductRepo()
 
 type ProductService struct {
-	Repo repository.InMemoryProductRepo
+	// Repo repository.InMemoryProductRepo
+	Repo repository.DbProductRepo
 	// repo repository.InMemoryProductRepo
 }
 
@@ -32,6 +33,6 @@ func (ps ProductService) AddProduct(name string, category model.Category, price 
 
 func NewProductService() ProductService {
 	return ProductService{
-		Repo: repository.NewInMemoryProductRepo(),
+		Repo: repository.NewDbProductRepo(),
 	}
 }
