@@ -54,11 +54,16 @@ func (pr ProductRouter) singleProductHandler(w http.ResponseWriter, r *http.Requ
 
 	if product == nil {
 		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(map[string]string{"message": "product does not exist"})
+		errRes := ErrorResponse{"product does not exist"}
+		json.NewEncoder(w).Encode(errRes)
 	} else {
 		if err := json.NewEncoder(w).Encode(product); err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte("Some error occoured"))
 		}
 	}
+}
+
+type ErrorResponse struct {
+	Message string `json:"message"`
 }
