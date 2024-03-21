@@ -7,32 +7,37 @@ import (
 
 // var repo repository.InMemoryProductRepo = repository.NewInMemoryProductRepo()
 
-type ProductService struct {
-	// Repo repository.InMemoryProductRepo
-	Repo repository.DbProductRepo
-	// repo repository.InMemoryProductRepo
+type ProductRepository interface {
+	FindBy(id int) *model.Product
+	FindAll() []model.Product
+	Save(newProduct model.Product) *model.Product
 }
 
-func (ps ProductService) GetAllProducts() []model.Product {
+type DefaultProductService struct {
+	Repo repository.InMemoryProductRepo
+	// Repo repository.DbProductRepo
+}
+
+func (ps DefaultProductService) GetAllProducts() []model.Product {
 	// return repo.FindAll()
 	return ps.Repo.FindAll()
 }
 
-func (ps ProductService) GetProductById(id int) *model.Product {
+func (ps DefaultProductService) GetProductById(id int) *model.Product {
 	// repo := repository.NewInMemoryProductRepo()
 	// return repo.FindBy(id)
 	return ps.Repo.FindBy(id)
 }
 
-func (ps ProductService) AddProduct(name string, category model.Category, price float32) *model.Product {
+func (ps DefaultProductService) AddProduct(name string, category model.Category, price float32) *model.Product {
 	// repo := repository.NewInMemoryProductRepo()
 	newProduct := model.Product{Name: name, Category: category, Price: price}
 
 	return ps.Repo.Save(newProduct)
 }
 
-func NewProductService() ProductService {
-	return ProductService{
-		Repo: repository.NewDbProductRepo(),
+func NewProductService(repo repository.InMemoryProductRepo) DefaultProductService {
+	return DefaultProductService{
+		Repo: repo,
 	}
 }

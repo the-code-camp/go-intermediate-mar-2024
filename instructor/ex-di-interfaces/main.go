@@ -2,6 +2,7 @@ package main
 
 import (
 	"ex-di-interfaces/model"
+	"ex-di-interfaces/repository"
 	"ex-di-interfaces/service"
 	"fmt"
 )
@@ -9,7 +10,10 @@ import (
 func main() {
 
 	// Printing all products
-	ps := service.NewProductService()
+	// dbRepo := repository.NewDbProductRepo()
+	inMemRepo := repository.NewInMemoryProductRepo()
+
+	ps := service.NewProductService(inMemRepo)
 
 	printProducts(ps.GetAllProducts())
 
@@ -28,7 +32,7 @@ func printProducts(products []model.Product) {
 	fmt.Println("### End ###")
 }
 
-func printProduct(id int, ps service.ProductService) {
+func printProduct(id int, ps service.DefaultProductService) {
 	if product := ps.GetProductById(id); product != nil {
 		fmt.Println("PRODUCT: ", product)
 	} else {
