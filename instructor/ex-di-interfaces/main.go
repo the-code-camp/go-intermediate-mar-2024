@@ -9,12 +9,13 @@ import (
 func main() {
 
 	// Printing all products
-	printProducts(service.GetAllProducts())
+	ps := service.ProductService{}
+	printProducts(ps.GetAllProducts())
 
-	newlyAddedProduct := service.AddProduct("new product", model.BOOKS, 109.99)
+	newlyAddedProduct := ps.AddProduct("new product", model.BOOKS, 109.99)
 
 	// printing the newly added product
-	printProduct(newlyAddedProduct.Id)
+	printProduct(newlyAddedProduct.Id, ps)
 
 }
 
@@ -26,8 +27,8 @@ func printProducts(products []model.Product) {
 	fmt.Println("### End ###")
 }
 
-func printProduct(id int) {
-	if product := service.GetProductById(id); product != nil {
+func printProduct(id int, ps service.ProductService) {
+	if product := ps.GetProductById(id); product != nil {
 		fmt.Println("PRODUCT: ", product)
 	} else {
 		fmt.Println(fmt.Sprintf("Product with id %d does not exist", id))
