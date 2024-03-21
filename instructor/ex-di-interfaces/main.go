@@ -9,7 +9,8 @@ import (
 func main() {
 
 	// Printing all products
-	ps := service.ProductService{}
+	ps := service.NewProductService()
+
 	printProducts(ps.GetAllProducts())
 
 	newlyAddedProduct := ps.AddProduct("new product", model.BOOKS, 109.99)
