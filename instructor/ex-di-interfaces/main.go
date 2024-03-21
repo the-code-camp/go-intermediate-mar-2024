@@ -29,9 +29,14 @@ func main() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/products", router.productsHandler).Methods(http.MethodGet)
+	r.HandleFunc("/products", router.newProductsHandler).Methods(http.MethodPost)
 	r.HandleFunc("/products/{id:[0-9]+}", router.singleProductHandler).Methods(http.MethodGet)
 
 	log.Fatal(http.ListenAndServe("localhost:8000", r))
+}
+
+func (pr ProductRouter) newProductsHandler(w http.ResponseWriter, r *http.Request) {
+
 }
 
 func (pr ProductRouter) productsHandler(w http.ResponseWriter, r *http.Request) {
