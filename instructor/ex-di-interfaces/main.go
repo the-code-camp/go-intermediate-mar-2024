@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"ex-di-interfaces/repository"
 	"ex-di-interfaces/service"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -27,6 +29,8 @@ func main() {
 	router := NewProductRouter(ps)
 
 	r := mux.NewRouter()
+	r.Use(loggingMiddleware)
+	r.Use(profilingMiddleware)
 
 	r.HandleFunc("/products", router.productsHandler).Methods(http.MethodGet)
 	r.HandleFunc("/products", router.newProductsHandler).Methods(http.MethodPost)
@@ -35,8 +39,24 @@ func main() {
 	log.Fatal(http.ListenAndServe("localhost:8000", r))
 }
 
-func (pr ProductRouter) newProductsHandler(w http.ResponseWriter, r *http.Request) {
+func profilingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Println("Incoming request: ", r.URL.Path)
+		next.ServeHTTP(w, r)
+		log.Println("Outgoing response: ")
+	})
+}
 
+func loggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		next.ServeHTTP(w, r)
+		fmt.Printf("Endpoint: %s | Elasped: %v \n", r.URL.Path, time.Since(start))
+	})
+}
+
+func (pr ProductRouter) newProductsHandler(w http.ResponseWriter, r *http.Request) {
+	// TODO: In the lab complete this functionality
 }
 
 func (pr ProductRouter) productsHandler(w http.ResponseWriter, r *http.Request) {
