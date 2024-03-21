@@ -7,6 +7,7 @@ type DbProductRepo struct {
 }
 
 func (r DbProductRepo) FindBy(id int) *model.Product {
+	// will be replaced by actual SQL
 	if p, ok := r.products[id]; ok {
 		return &p
 	}
