@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type Employee struct {
@@ -21,19 +22,26 @@ type Employee struct {
 
 func main() {
 
+	// http://localhost:8080/greet?id=123
+
 	http.HandleFunc("/greet", func(w http.ResponseWriter, r *http.Request) {
+
+		id := r.URL.Query().Get("id")
+		// needs to be in this order
 		w.Header().Add("Content-Type", "application/json")
-		w.WriteHeader(http.StatusCreated)
-		// m := make(map[string]string, 0)
-		// m["message"] = "Hello World!"
-		// w.Write([]byte("Hello World!"))
+		// w.WriteHeader(http.StatusOK)
 
-		emp := Employee{100, "emp-1", 1234.56}
-
-		if err := json.NewEncoder(w).Encode(emp); err != nil {
-			// send a bad response code
+		empId, err := strconv.Atoi(id)
+		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("Some error occoured"))
+			w.Write([]byte(err.Error()))
+		} else {
+			emp := Employee{empId, "emp-1", 1234.56}
+			if err := json.NewEncoder(w).Encode(emp); err != nil {
+				// send a bad response code
+				w.WriteHeader(http.StatusBadRequest)
+				w.Write([]byte("Some error occoured"))
+			}
 		}
 	})
 
