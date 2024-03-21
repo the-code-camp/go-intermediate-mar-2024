@@ -22,32 +22,44 @@ type Employee struct {
 
 func main() {
 
-	// http://localhost:8080/greet?id=123
-
-	http.HandleFunc("/greet", func(w http.ResponseWriter, r *http.Request) {
-
-		id := r.URL.Query().Get("id")
-		w.Header().Add("Content-Type", "application/json")
-
-		empId, err := strconv.Atoi(id)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			// w.Write([]byte(err.Error()))
-			// errorResponse := map[string]string{
-			// 	"mesage": err.Error(),
-			// }
-			json.NewEncoder(w).Encode(map[string]string{"message": err.Error()})
-		} else {
-			emp := Employee{empId, "emp-1", 1234.56}
-			if err := json.NewEncoder(w).Encode(emp); err != nil {
-				// send a bad response code
-				w.WriteHeader(http.StatusBadRequest)
-				w.Write([]byte("Some error occoured"))
-			}
-		}
-	})
+	http.HandleFunc("/greet", greetHandler)
+	http.HandleFunc("/products", productsHandler)
 
 	log.Fatal(http.ListenAndServe("localhost:8000", nil))
+}
+
+func productsHandler(w http.ResponseWriter, r *http.Request) {
+	dbRepo := repository.NewDbProductRepo()
+	ps := service.NewProductService(dbRepo)
+	products := ps.GetAllProducts()
+	// w.Header().Add("Content-Type", "application/json")
+
+	if err := json.NewEncoder(w).Encode(products); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Some error occoured"))
+	}
+}
+
+func greetHandler(w http.ResponseWriter, r *http.Request) {
+	id := r.URL.Query().Get("id")
+	w.Header().Add("Content-Type", "application/json")
+
+	empId, err := strconv.Atoi(id)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		// w.Write([]byte(err.Error()))
+		// errorResponse := map[string]string{
+		// 	"mesage": err.Error(),
+		// }
+		json.NewEncoder(w).Encode(map[string]string{"message": err.Error()})
+	} else {
+		emp := Employee{empId, "emp-1", 1234.56}
+		if err := json.NewEncoder(w).Encode(emp); err != nil {
+			// send a bad response code
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("Some error occoured"))
+		}
+	}
 }
 
 func Start() {
