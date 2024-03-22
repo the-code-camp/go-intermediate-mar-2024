@@ -8,8 +8,18 @@ import (
 	"time"
 )
 
-// Its a semaphone based counter
+/**
+HTOP: runs as `htop`
 
+- Press F2 for SETUP
+- In the screen -> Main -> Active Columns -> Available Columns
+- Choose NLWP (Press ENTER)
+- Press q to comeout of the setup mode
+- F4 for filter and add the binary name
+
+*/
+
+// Its a semaphone based counter
 func main() {
 	count := flag.Int("count", 0, "Number of go routines to spin up")
 	flag.Parse()
