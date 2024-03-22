@@ -9,7 +9,7 @@ import (
 )
 
 /**
-HTOP: runs as `htop`
+HTOP: runs as htop
 
 - Press F2 for SETUP
 - In the screen -> Main -> Active Columns -> Available Columns
