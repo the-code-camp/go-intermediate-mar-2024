@@ -36,7 +36,7 @@ func main() {
 	r.HandleFunc("/products", router.newProductsHandler).Methods(http.MethodPost)
 	r.HandleFunc("/products/{id:[0-9]+}", router.singleProductHandler).Methods(http.MethodGet)
 
-	log.Fatal(http.ListenAndServe("localhost:8000", r))
+	log.Fatal(http.ListenAndServe(":8000", r))
 }
 
 func profilingMiddleware(next http.Handler) http.Handler {
